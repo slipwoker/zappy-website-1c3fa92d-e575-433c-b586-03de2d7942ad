@@ -7515,6 +7515,57 @@ div[id*="mic-access-tool-box"] button[class*="reset"] * {
 .retro-catalog__subtitle { font-size: 2rem; font-weight: 700; color: var(--text-color, #1a1a2e); margin-bottom: 1rem; }
 .retro-catalog__subtitle { font-size: 1.1rem; color: #666; margin-bottom: 2rem; }
 @media (max-width: 768px) { .retro-catalog { padding: 48px 16px; } }
+
+/* AI-generated section */
+.world-section { padding: 80px 20px; background: var(--bg-color, #f8f9fa); color: var(--text-color, #1a1a2e); }
+.world-container { max-width: 800px; margin: 0 auto; }
+.world-header { text-align: center; margin-bottom: 3rem; }
+.world-title { font-size: 2rem; font-weight: 700; color: var(--text-color, #1a1a2e); margin-bottom: 1rem; }
+.world-title-icon { font-size: 2rem; font-weight: 700; color: var(--text-color, #1a1a2e); margin-bottom: 1rem; }
+.world-subtitle { font-size: 2rem; font-weight: 700; color: var(--text-color, #1a1a2e); margin-bottom: 1rem; }
+.world-subtitle { font-size: 1.1rem; color: #666; margin-bottom: 2rem; }
+.world-title-icon { font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0; color: var(--primary-color); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.world-card-btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.world-card-btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
+@media (max-width: 768px) { .world-section { padding: 48px 16px; } }
 /* mobile-submenu-overflow-fix */
 @media (max-width: 768px) {
   .navbar .sub-menu.mobile-expanded,
