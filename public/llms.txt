@@ -1,0 +1,85 @@
+# Sport_jersey — Generative Engine Optimization Map
+
+> An online store specializing in football (soccer) jerseys. The business revolves around football culture and fan merchandise, likely offering jerseys from various teams, leagues, or national squads. The brand identity is rooted in sports passion and team loyalty.
+
+---
+
+## Pages
+
+### בית
+https://sport-jersey-1c3fa92d.zappy5.app
+מחפש חולצות כדורגל מקוריות לקנייה? ב-Sport_jersey תמצא את המגוון הכי חם של חולצות קבוצות מכל הליגות. הצטרף לתרבות המעריצים ושדרג את המלתחה עוד היום!
+
+### אוספים
+https://sport-jersey-1c3fa92d.zappy5.app/collections
+דפדף באוספים המרהיבים של חולצות כדורגל מקוריות לקנייה. כל הקבוצות, כל הליגות, כל העיצובים האייקוניים מחכים לך. התחל לבנות את האוסף המושלם עכשיו!
+
+### תרבות מעריצים
+https://sport-jersey-1c3fa92d.zappy5.app/fan-culture
+תרבות המעריצים מתעוררת לחיים עם חולצות כדורגל שמספרות סיפור. קבל טיפים, השראות וחולצת כדורגל מתנה לילדים שתדליק את הלב. היכנס לעולם האוהדים!
+
+### צור קשר
+https://sport-jersey-1c3fa92d.zappy5.app/contact
+יש שאלה על חולצות כדורגל מקוריות לקנייה? צוות Sport_jersey כאן כדי לעזור לך לבחור את המידה, העיצוב או המתנה המושלמת. צור קשר ונחזור במהירות!
+
+### תודה - Sport_jersey
+https://sport-jersey-1c3fa92d.zappy5.app/thank-you
+Sport_jersey - תודה - Sport_jersey
+
+## Legal & Policy
+
+### Privacy Policy
+https://sport-jersey-1c3fa92d.zappy5.app/privacy
+Information about how user data is collected, stored, and protected.
+
+### Terms & Conditions
+https://sport-jersey-1c3fa92d.zappy5.app/terms
+Legal terms describing service usage, rights, and policies.
+
+### Accessibility Statement
+https://sport-jersey-1c3fa92d.zappy5.app/accessibility
+Information about WCAG compliance and accessibility features.
+
+---
+
+## How to Contact Us
+
+- (No contact details configured yet.)
+
+### Contact form
+- URL: https://sport-jersey-1c3fa92d.zappy5.app/contact
+- Endpoint: https://sport-jersey-1c3fa92d.zappy5.app/api/email/contact-form
+- Method: POST
+- Content-Type: application/json
+- Fields:
+  - `name` (text)
+  - `email` (email)
+  - `phone` (tel)
+  - `message` (textarea)
+  - `privacy_consent` (checkbox)
+
+---
+
+# Business Context (for LLM understanding)
+
+## About Sport_jersey
+An online store specializing in football (soccer) jerseys. The business revolves around football culture and fan merchandise, likely offering jerseys from various teams, leagues, or national squads. The brand identity is rooted in sports passion and team loyalty.
+
+## Services/Products
+- חולצות כדורגל
+
+## Target Audience
+- אוהדי כדורגל ואספנים
+- קבוצות ספורט נוער
+- קונים שמחפשים מתנות
+
+## Industry
+Sports Apparel E-commerce
+
+---
+
+# Machine-readable feeds
+
+- Sitemap (XML): https://sport-jersey-1c3fa92d.zappy5.app/sitemap.xml
+- Robots: https://sport-jersey-1c3fa92d.zappy5.app/robots.txt
+- Flattened page text (for LLMs): https://sport-jersey-1c3fa92d.zappy5.app/llms-full.txt
