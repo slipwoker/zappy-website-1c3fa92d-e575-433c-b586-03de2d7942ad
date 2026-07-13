@@ -7468,6 +7468,34 @@ div[id*="mic-access-tool-box"] button[class*="reset"] * {
 .epl-card__btn-icon { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
 .epl-card__btn-icon:hover { opacity: 0.9; transform: translateY(-1px); }
 @media (max-width: 768px) { .epl-catalog { padding: 48px 16px; } }
+
+/* AI-generated section */
+.seriea-catalog { padding: 80px 20px; background: var(--bg-color, #f8f9fa); color: var(--text-color, #1a1a2e); }
+.seriea-catalog__container { max-width: 800px; margin: 0 auto; }
+.seriea-catalog__header { text-align: center; margin-bottom: 3rem; }
+.seriea-catalog__title { font-size: 2rem; font-weight: 700; color: var(--text-color, #1a1a2e); margin-bottom: 1rem; }
+.seriea-catalog__subtitle { font-size: 2rem; font-weight: 700; color: var(--text-color, #1a1a2e); margin-bottom: 1rem; }
+.seriea-catalog__subtitle { font-size: 1.1rem; color: #666; margin-bottom: 2rem; }
+.seriea-card__wa-icon { font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0; color: var(--primary-color); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.seriea-card__wa-btn { display: inline-block; padding: 14px 32px; background: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-decoration: none; transition: opacity 0.2s, transform 0.2s; }
+.seriea-card__wa-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+@media (max-width: 768px) { .seriea-catalog { padding: 48px 16px; } }
 /* mobile-submenu-overflow-fix */
 @media (max-width: 768px) {
   .navbar .sub-menu.mobile-expanded,
