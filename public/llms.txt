@@ -47,6 +47,7 @@ Information about WCAG compliance and accessibility features.
 - Email: Ataigold0504@gmail.com
 - Phone: 0523938005
 - Phone (tel): tel:0523938005
+- Address: 9 נעמי שמר, קריית ביאליק, ישראל, 2751419, ישראל
 
 ### Contact form
 - URL: https://example.com/contact
