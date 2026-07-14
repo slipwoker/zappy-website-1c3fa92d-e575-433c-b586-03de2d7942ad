@@ -7,37 +7,37 @@
 ## Pages
 
 ### בית
-https://example.com
+https://sport-jersey.zappy5.app
 מחפש חולצות כדורגל מקוריות לקנייה? ב-Sport_jersey תמצא את המגוון הכי חם של חולצות קבוצות מכל הליגות. הצטרף לתרבות המעריצים ושדרג את המלתחה עוד היום!
 
 ### אוספים
-https://example.com/collections
+https://sport-jersey.zappy5.app/collections
 דפדף באוספים המרהיבים של חולצות כדורגל מקוריות לקנייה. כל הקבוצות, כל הליגות, כל העיצובים האייקוניים מחכים לך. התחל לבנות את האוסף המושלם עכשיו!
 
 ### תרבות מעריצים
-https://example.com/fan-culture
+https://sport-jersey.zappy5.app/fan-culture
 תרבות המעריצים מתעוררת לחיים עם חולצות כדורגל שמספרות סיפור. קבל טיפים, השראות וחולצת כדורגל מתנה לילדים שתדליק את הלב. היכנס לעולם האוהדים!
 
 ### צור קשר
-https://example.com/contact
+https://sport-jersey.zappy5.app/contact
 יש שאלה על חולצות כדורגל מקוריות לקנייה? צוות Sport_jersey כאן כדי לעזור לך לבחור את המידה, העיצוב או המתנה המושלמת. צור קשר ונחזור במהירות!
 
 ### תודה - Sport_jersey
-https://example.com/thank-you
+https://sport-jersey.zappy5.app/thank-you
 Sport_jersey - תודה - Sport_jersey
 
 ## Legal & Policy
 
 ### Privacy Policy
-https://example.com/privacy
+https://sport-jersey.zappy5.app/privacy
 Information about how user data is collected, stored, and protected.
 
 ### Terms & Conditions
-https://example.com/terms
+https://sport-jersey.zappy5.app/terms
 Legal terms describing service usage, rights, and policies.
 
 ### Accessibility Statement
-https://example.com/accessibility
+https://sport-jersey.zappy5.app/accessibility
 Information about WCAG compliance and accessibility features.
 
 ---
@@ -50,8 +50,8 @@ Information about WCAG compliance and accessibility features.
 - Address: 9 נעמי שמר, קריית ביאליק, ישראל, 2751419, ישראל
 
 ### Contact form
-- URL: https://example.com/contact
-- Endpoint: https://example.com/api/email/contact-form
+- URL: https://sport-jersey.zappy5.app/contact
+- Endpoint: https://sport-jersey.zappy5.app/api/email/contact-form
 - Method: POST
 - Content-Type: application/json
 - Fields:
@@ -83,6 +83,6 @@ Sports Apparel E-commerce
 
 # Machine-readable feeds
 
-- Sitemap (XML): https://example.com/sitemap.xml
-- Robots: https://example.com/robots.txt
-- Flattened page text (for LLMs): https://example.com/llms-full.txt
+- Sitemap (XML): https://sport-jersey.zappy5.app/sitemap.xml
+- Robots: https://sport-jersey.zappy5.app/robots.txt
+- Flattened page text (for LLMs): https://sport-jersey.zappy5.app/llms-full.txt
