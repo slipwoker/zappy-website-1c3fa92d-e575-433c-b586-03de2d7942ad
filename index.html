@@ -221,6 +221,377 @@
 })();
 </script>
 <!-- End Zappy Analytics -->
+<!-- Zappy Marketing Events -->
+<script>
+(function() {
+  'use strict';
+  if (window.zappyFireMarketingEvent) return;
+
+  var ECOM_MODE = "";
+  var IS_CATALOG = false;
+  var IS_FULL = false;
+
+  var ECOM_ALIAS = {
+    begin_checkout: 'checkout_started',
+    purchase: 'checkout_complete',
+    add_to_cart: 'add_to_cart',
+    view_product: 'view_product'
+  };
+
+  function pagePath() {
+    try {
+      if (window.ZAPPY_CONFIG && window.ZAPPY_CONFIG.currentPagePath) {
+        return window.ZAPPY_CONFIG.currentPagePath;
+      }
+    } catch (e) {}
+    try { return window.location.pathname || '/'; } catch (e2) { return '/'; }
+  }
+
+  function normalizeItems(meta) {
+    meta = meta || {};
+    var raw = meta.items || meta.cartItems || meta.cart_items || meta.lineItems || [];
+    if (!Array.isArray(raw)) raw = [];
+    var out = [];
+    for (var i = 0; i < raw.length; i++) {
+      var item = raw[i];
+      if (!item || typeof item !== 'object') continue;
+      var id = String(item.item_id || item.productId || item.product_id || item.id || '').trim();
+      var name = String(item.item_name || item.productName || item.product_name || item.name || '').trim();
+      var price = parseFloat(item.price != null ? item.price : (item.unitPrice != null ? item.unitPrice : 0)) || 0;
+      var quantity = Math.max(1, parseInt(item.quantity != null ? item.quantity : (item.qty != null ? item.qty : 1), 10) || 1);
+      if (!id && !name) continue;
+      out.push({ item_id: id || name, item_name: name || id, price: price, quantity: quantity });
+    }
+    return out;
+  }
+
+  function buildGa4Params(eventId, meta) {
+    meta = meta || {};
+    var items = normalizeItems(meta);
+    var value = parseFloat(meta.value != null ? meta.value : (meta.total != null ? meta.total : 0)) || 0;
+    var currency = String(meta.currency || 'USD').toUpperCase();
+
+    if (eventId === 'checkout_complete') {
+      return {
+        transaction_id: String(meta.transaction_id || meta.orderId || meta.order_id || meta.orderNumber || '') || undefined,
+        value: value,
+        currency: currency,
+        items: items
+      };
+    }
+    if (eventId === 'checkout_started') {
+      return { value: value, currency: currency, items: items };
+    }
+    if (eventId === 'add_to_cart') {
+      var atcItems = items.length ? items : [{
+        item_id: String(meta.productId || meta.product_id || ''),
+        item_name: String(meta.productName || meta.product_name || ''),
+        price: parseFloat(meta.value != null ? meta.value : (meta.price != null ? meta.price : 0)) || 0,
+        quantity: parseInt(meta.quantity != null ? meta.quantity : 1, 10) || 1
+      }].filter(function(x) { return x.item_id || x.item_name; });
+      return {
+        value: value || (atcItems[0] ? atcItems[0].price * atcItems[0].quantity : 0),
+        currency: currency,
+        items: atcItems
+      };
+    }
+    if (eventId === 'view_product') {
+      var vpItems = items.length ? items : [{
+        item_id: String(meta.productId || meta.product_id || ''),
+        item_name: String(meta.productName || meta.product_name || ''),
+        price: parseFloat(meta.price != null ? meta.price : (meta.value != null ? meta.value : 0)) || 0,
+        quantity: 1
+      }].filter(function(x) { return x.item_id || x.item_name; });
+      return {
+        currency: currency,
+        value: value || (vpItems[0] ? vpItems[0].price : 0),
+        items: vpItems
+      };
+    }
+    if (eventId === 'whatsapp_click' || eventId === 'phone_click') {
+      return { method: eventId === 'whatsapp_click' ? 'whatsapp' : 'phone', page_path: meta.pagePath || pagePath() };
+    }
+    if (eventId === 'contact_form_submitted' || eventId === 'product_inquiry') {
+      return { page_path: meta.pagePath || pagePath() };
+    }
+    return meta;
+  }
+
+  function buildMetaParams(eventId, meta) {
+    meta = meta || {};
+    var items = normalizeItems(meta);
+    var value = parseFloat(meta.value != null ? meta.value : (meta.total != null ? meta.total : 0)) || 0;
+    var currency = String(meta.currency || 'USD').toUpperCase();
+    var contentIds = [];
+    var numItems = 0;
+    for (var i = 0; i < items.length; i++) {
+      if (items[i].item_id) contentIds.push(items[i].item_id);
+      numItems += items[i].quantity || 1;
+    }
+
+    if (eventId === 'checkout_complete') {
+      return {
+        value: value,
+        currency: currency,
+        content_ids: contentIds.length ? contentIds : undefined,
+        content_type: 'product',
+        num_items: numItems || undefined,
+        order_id: String(meta.order_id || meta.orderId || meta.transaction_id || meta.orderNumber || '') || undefined
+      };
+    }
+    if (eventId === 'checkout_started') {
+      return {
+        value: value,
+        currency: currency,
+        content_ids: contentIds.length ? contentIds : undefined,
+        content_type: 'product',
+        num_items: numItems || parseInt(meta.itemCount != null ? meta.itemCount : 0, 10) || undefined
+      };
+    }
+    if (eventId === 'add_to_cart') {
+      var id = String(meta.productId || meta.product_id || contentIds[0] || '');
+      return {
+        value: value || (items[0] ? items[0].price * items[0].quantity : 0),
+        currency: currency,
+        content_ids: id ? [id] : (contentIds.length ? contentIds : undefined),
+        content_type: 'product',
+        content_name: meta.productName || meta.product_name || (items[0] && items[0].item_name),
+        num_items: parseInt(meta.quantity != null ? meta.quantity : (numItems || 1), 10) || 1
+      };
+    }
+    if (eventId === 'view_product') {
+      var vid = String(meta.productId || meta.product_id || contentIds[0] || '');
+      return {
+        value: value || parseFloat(meta.price != null ? meta.price : 0) || 0,
+        currency: currency,
+        content_ids: vid ? [vid] : (contentIds.length ? contentIds : undefined),
+        content_type: 'product',
+        content_name: meta.productName || meta.product_name || (items[0] && items[0].item_name)
+      };
+    }
+    if (eventId === 'whatsapp_click' || eventId === 'phone_click') {
+      return {
+        content_name: eventId === 'whatsapp_click' ? 'WhatsApp' : 'Phone',
+        content_category: 'contact'
+      };
+    }
+    if (eventId === 'contact_form_submitted' || eventId === 'product_inquiry') {
+      return {
+        content_name: eventId === 'product_inquiry' ? 'Product inquiry' : 'Contact form',
+        content_category: meta.productName || meta.product_name || undefined
+      };
+    }
+    return meta;
+  }
+
+  var PLATFORM = {
+    whatsapp_click: { ga4: 'contact', meta: 'Contact', gtm: 'whatsapp_click', ecom: false },
+    phone_click: { ga4: 'contact', meta: 'Contact', gtm: 'phone_click', ecom: false },
+    contact_form_submitted: { ga4: 'generate_lead', meta: 'Lead', gtm: 'contact_form_submitted', ecom: false },
+    checkout_started: { ga4: 'begin_checkout', meta: 'InitiateCheckout', gtm: 'begin_checkout', ecom: true },
+    checkout_complete: { ga4: 'purchase', meta: 'Purchase', gtm: 'purchase', ecom: true },
+    product_inquiry: { ga4: 'generate_lead', meta: 'Lead', gtm: 'product_inquiry', ecom: false },
+    add_to_cart: { ga4: 'add_to_cart', meta: 'AddToCart', gtm: 'add_to_cart', ecom: true },
+    view_product: { ga4: 'view_item', meta: 'ViewContent', gtm: 'view_item', ecom: true }
+  };
+
+  function purchaseDedupKey(orderId) {
+    return 'zappy_purchase_fired_' + String(orderId || '');
+  }
+
+  function alreadyFiredPurchase(orderId) {
+    if (!orderId) return false;
+    try {
+      return sessionStorage.getItem(purchaseDedupKey(orderId)) === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function markPurchaseFired(orderId) {
+    if (!orderId) return;
+    try { sessionStorage.setItem(purchaseDedupKey(orderId), '1'); } catch (e) {}
+  }
+
+  /**
+   * Fire a marketing event to first-party analytics + GA4/GTM/Meta when present.
+   * @param {string} eventName marketing ID or ecommerce alias
+   * @param {object} [metadata]
+   * @param {{ skipFirstParty?: boolean }} [opts]
+   */
+  window.zappyFireMarketingEvent = function(eventName, metadata, opts) {
+    try {
+      opts = opts || {};
+      metadata = metadata || {};
+      var eventId = ECOM_ALIAS[eventName] || eventName;
+      var plat = PLATFORM[eventId];
+      if (!plat) return;
+
+      if (!metadata.pagePath && !metadata.page_path) {
+        metadata.pagePath = pagePath();
+      }
+
+      if (eventId === 'checkout_complete') {
+        var oid = String(metadata.orderId || metadata.order_id || metadata.transaction_id || '');
+        if (oid && alreadyFiredPurchase(oid)) return;
+        if (oid) markPurchaseFired(oid);
+      }
+
+      // First-party (skip when already tracked via zappyTrackEcomAnalytics path
+      // that opts out, or when caller already recorded under a different name)
+      if (!opts.skipFirstParty) {
+        try {
+          if (window.zappyAnalytics && typeof window.zappyAnalytics.track === 'function') {
+            window.zappyAnalytics.track(eventId, metadata);
+          }
+        } catch (e1) {}
+      }
+
+      // GTM / dataLayer — platform-standard ecommerce event names
+      try {
+        window.dataLayer = window.dataLayer || [];
+        if (plat.ecom) {
+          var ga4ForGtm = buildGa4Params(eventId, metadata);
+          var ecommerce = {};
+          if (ga4ForGtm.transaction_id) ecommerce.transaction_id = ga4ForGtm.transaction_id;
+          if (ga4ForGtm.value != null) ecommerce.value = ga4ForGtm.value;
+          if (ga4ForGtm.currency) ecommerce.currency = ga4ForGtm.currency;
+          if (ga4ForGtm.items) ecommerce.items = ga4ForGtm.items;
+          window.dataLayer.push({ event: plat.gtm, ecommerce: ecommerce });
+          // Secondary Zappy-specific trigger for merchants who want it
+          if (eventId === 'checkout_complete' || eventId === 'checkout_started') {
+            window.dataLayer.push({ event: eventId, ecommerce: ecommerce });
+          }
+        } else {
+          var dl = { event: plat.gtm };
+          for (var k in metadata) {
+            if (Object.prototype.hasOwnProperty.call(metadata, k)) dl[k] = metadata[k];
+          }
+          window.dataLayer.push(dl);
+        }
+      } catch (e2) {}
+
+      // GA4 gtag
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', plat.ga4, buildGa4Params(eventId, metadata));
+        }
+      } catch (e3) {}
+
+      // Meta Pixel (only when fbq is loaded — consent-gated lazy loader)
+      try {
+        if (typeof window.fbq === 'function') {
+          window.fbq('track', plat.meta, buildMetaParams(eventId, metadata));
+        }
+      } catch (e4) {}
+    } catch (err) {}
+  };
+
+  // ---- Click listeners (capture) ----
+  var recent = Object.create(null);
+  function dedupe(key) {
+    var now = Date.now();
+    if (recent[key] && now - recent[key] < 800) return true;
+    recent[key] = now;
+    return false;
+  }
+
+  function closest(el, selector) {
+    if (!el) return null;
+    if (el.closest) return el.closest(selector);
+    return null;
+  }
+
+  function findAnchor(el) {
+    var node = el;
+    while (node && node !== document) {
+      if (node.tagName === 'A') return node;
+      node = node.parentElement;
+    }
+    return null;
+  }
+
+  function isWhatsAppHref(href) {
+    if (!href) return false;
+    var h = String(href).toLowerCase();
+    return h.indexOf('wa.me/') !== -1 ||
+      h.indexOf('api.whatsapp.com') !== -1 ||
+      h.indexOf('whatsapp.com/send') !== -1 ||
+      h.indexOf('whatsapp:') === 0;
+  }
+
+  document.addEventListener('click', function(e) {
+    try {
+      var target = e.target;
+      if (!target) return;
+
+      // WhatsApp
+      var waFloat = closest(target, '.whatsapp-float, a.whatsapp-float, [data-zappy-whatsapp]');
+      var anchor = findAnchor(target);
+      var href = (anchor && anchor.href) || '';
+      if (waFloat || (anchor && isWhatsAppHref(href))) {
+        if (!dedupe('wa:' + href)) {
+          var waSource = waFloat ? 'float' : 'link';
+          window.zappyFireMarketingEvent('whatsapp_click', {
+            source: waSource,
+            href: href || null,
+            pagePath: pagePath()
+          });
+        }
+        return;
+      }
+
+      // Phone
+      var phoneBtn = closest(target, '.phone-header-btn, .nav-phone-btn, .call-btn, [data-zappy-phone]');
+      var telHref = '';
+      if (anchor && anchor.href && String(anchor.href).toLowerCase().indexOf('tel:') === 0) {
+        telHref = anchor.href;
+      } else if (phoneBtn && phoneBtn.href && String(phoneBtn.href).toLowerCase().indexOf('tel:') === 0) {
+        telHref = phoneBtn.href;
+      }
+      if (phoneBtn || telHref) {
+        var phone = '';
+        if (telHref) {
+          phone = String(telHref).replace(/^tel:/i, '').trim();
+        }
+        if (!dedupe('tel:' + (phone || (phoneBtn && phoneBtn.id) || 'btn'))) {
+          window.zappyFireMarketingEvent('phone_click', {
+            source: phoneBtn ? 'button' : 'link',
+            phone: phone || null,
+            href: telHref || null,
+            pagePath: pagePath()
+          });
+        }
+        return;
+      }
+
+      // Catalog / product inquiry
+      if (IS_CATALOG || IS_FULL) {
+        var inq = closest(target, '.card-inquiry-btn, #zappy-pdp-inquiry-btn, a.inquiry-btn');
+        if (inq) {
+          if (!dedupe('inq:' + (inq.id || inq.className))) {
+            var product = window.currentProduct || null;
+            var productId = (inq.getAttribute && inq.getAttribute('data-product-id')) ||
+              (product && product.id) || null;
+            var productName = (inq.getAttribute && inq.getAttribute('data-product-name')) ||
+              (product && product.name) || null;
+            var channel = 'contact_page';
+            var inqHref = (inq.tagName === 'A' && inq.href) ? inq.href : '';
+            if (inqHref && String(inqHref).toLowerCase().indexOf('mailto:') === 0) channel = 'mailto';
+            window.zappyFireMarketingEvent('product_inquiry', {
+              source: inq.id === 'zappy-pdp-inquiry-btn' ? 'pdp' : 'card',
+              productId: productId,
+              productName: productName,
+              channel: channel,
+              pagePath: pagePath()
+            });
+          }
+        }
+      }
+    } catch (err) {}
+  }, true);
+})();
+</script>
     <meta property="og:title" content="גלה את חולצות הכדורגל הכי שוות עכשיו — Sport_jersey">
     <meta property="og:description" content="מחפש חולצות כדורגל מקוריות לקנייה? ב-Sport_jersey תמצא את המגוון הכי חם של חולצות קבוצות מכל הליגות. הצטרף לתרבות המעריצים ושדרג את המלתחה עוד היום!">
     <meta name="twitter:card" content="summary_large_image">
@@ -905,7 +1276,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
       <!-- Card 2: National Team Jerseys -->
       <article class="index-showcase-section__card" data-grid-item-index="1">
         <div class="index-showcase-section__card-media">
-          <img loading="lazy" decoding="async" data-placeholder="index-showcase-image-2" data-context="A national team football jersey folded neatly with the country crest visible, set against a minimalist white surface, high-end catalog photography" width="600" height="400" src="/assets/site-index-showcase-image-2-1783965084229-7p7f1p.webp" alt="חולצת כדורגל של נבחרת לאומית" data-element-type="image" data-element-id="img-1783964806070-4epn1j24m" style="" fetchpriority="low">
+          <img loading="lazy" decoding="async" data-placeholder="index-showcase-image-2" data-context="A national team football jersey folded neatly with the country crest visible, set against a minimalist white surface, high-end catalog photography" width="600" height="400" src="/assets/site-index-showcase-image-2-1783965084229-7p7f1p.webp" alt="חולצת כדורגל של נבחרת לאומית" data-element-type="image" data-element-id="img-1783964806070-4epn1j24m" fetchpriority="low">
           <span class="index-showcase-section__sticker index-showcase-section__sticker--new-drop" style="color: rgb(16, 24, 39) !important;">נחיתה חדשה</span>
         </div>
         <div class="index-showcase-section__card-body">
@@ -917,7 +1288,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
       <!-- Card 3: Retro & Collector Jerseys -->
       <article class="index-showcase-section__card" data-grid-item-index="2">
         <div class="index-showcase-section__card-media">
-          <img loading="lazy" decoding="async" data-placeholder="index-showcase-image-3" data-context="A vintage retro football jersey from the 90s displayed on a wooden surface, slightly faded colors and classic collar design, nostalgic collector vibe" width="600" height="400" src="/assets/site-index-showcase-image-3-1783965182006-zpza02.webp" alt="חולצת כדורגל רטרו ואספנות" data-element-type="image" data-element-id="img-1783964806072-n9zxbawsy" style="" fetchpriority="low">
+          <img loading="lazy" decoding="async" data-placeholder="index-showcase-image-3" data-context="A vintage retro football jersey from the 90s displayed on a wooden surface, slightly faded colors and classic collar design, nostalgic collector vibe" width="600" height="400" src="/assets/site-index-showcase-image-3-1783965182006-zpza02.webp" alt="חולצת כדורגל רטרו ואספנות" data-element-type="image" data-element-id="img-1783964806072-n9zxbawsy" fetchpriority="low">
           <span class="index-showcase-section__sticker index-showcase-section__sticker--collector">פריט אספנים</span>
         </div>
         <div class="index-showcase-section__card-body">
@@ -948,7 +1319,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
         <img loading="lazy" decoding="async" data-placeholder="index-story-image-1" data-context="Candid crowd photography at a football stadium during a night match, fans wearing red and white team scarves, raised arms, flares and smoke in the background, dramatic stadium lighting, editorial sports photojournalism style" width="600" height="400" src="/assets/site-index-story-image-1.webp" alt="אוהדים ביציע באצטדיון כדורגל, צעיפי קבוצה מורמים באוויר" data-element-type="image" data-element-id="img-1783964806073-9mw1fkul9" style="object-position: 50% 50%; width: 324px !important; max-width: none !important; max-height: none !important; height: auto !important;" fetchpriority="low">
       </div>
       <div class="index-story-section__collage-secondary">
-        <img loading="lazy" decoding="async" data-placeholder="index-story-image-2" data-context="Close-up of a child holding a vintage football jersey with visible stitching and number print, warm nostalgic lighting, shallow depth of field, emotional connection to football heritage" width="400" height="300" src="/assets/site-index-story-image-2.webp" alt="ילד אוחז בחולצת כדורגל רטרו עם מספר מודפס" data-element-type="image" data-element-id="img-1783964806074-ot9xhklqf" style="" fetchpriority="low">
+        <img loading="lazy" decoding="async" data-placeholder="index-story-image-2" data-context="Close-up of a child holding a vintage football jersey with visible stitching and number print, warm nostalgic lighting, shallow depth of field, emotional connection to football heritage" width="400" height="300" src="/assets/site-index-story-image-2.webp" alt="ילד אוחז בחולצת כדורגל רטרו עם מספר מודפס" data-element-type="image" data-element-id="img-1783964806074-ot9xhklqf" fetchpriority="low">
       </div>
       <div class="index-story-section__collage-ticket">
         <div class="index-story-section__ticket-graphic">
@@ -970,10 +1341,10 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
     <div class="index-story-section__content">
       <h2 class="index-story-section__headline">הסיפור מאחורי החולצה</h2>
       <div class="index-story-section__text">
-        <p style="">יום משחק הוא לא עוד יום בשבוע. זהו טקס של אמונה, צעיף כרוך סביב הצוואר, הלב פועם בקצב היציע. מרגע ששריקת הפתיחה קורעת את האוויר, אנחנו כבר לא סתם צופים — אנחנו חלק ממשהו גדול מאיתנו. חולצת הכדורגל היא לא רק בד; היא דגל אישי, זיכרון של אליפות, של שער ניצחון בדקה התשעים, של אבא שהרים אותנו על הכתפיים.</p>
-        <p style="">ב-Sport_jersey אנחנו מאמינים שכל אוהד ראוי לחולצה שמרגישה כמו עור שני. אנחנו אוספים את החולצות הכי טובות שיש, האיכותיות, המדויקות, אלו שמספרות את הסיפור שלכם — בין אם אתם ילדים שרודפים אחרי חלום הכדורגל הראשון, ובין אם אתם אספנים ותיקים שמחפשים את הפריט שיסגור את האוסף.</p>
+        <p>יום משחק הוא לא עוד יום בשבוע. זהו טקס של אמונה, צעיף כרוך סביב הצוואר, הלב פועם בקצב היציע. מרגע ששריקת הפתיחה קורעת את האוויר, אנחנו כבר לא סתם צופים — אנחנו חלק ממשהו גדול מאיתנו. חולצת הכדורגל היא לא רק בד; היא דגל אישי, זיכרון של אליפות, של שער ניצחון בדקה התשעים, של אבא שהרים אותנו על הכתפיים.</p>
+        <p>ב-Sport_jersey אנחנו מאמינים שכל אוהד ראוי לחולצה שמרגישה כמו עור שני. אנחנו אוספים את החולצות הכי טובות שיש, האיכותיות, המדויקות, אלו שמספרות את הסיפור שלכם — בין אם אתם ילדים שרודפים אחרי חלום הכדורגל הראשון, ובין אם אתם אספנים ותיקים שמחפשים את הפריט שיסגור את האוסף.</p>
       </div>
-      <ul class="index-story-section__beliefs" style=""><li class="index-story-section__belief-item" style="background-color: rgba(255, 244, 214, 0.04) !important; padding: 12px !important; box-sizing: border-box; grid-area: auto !important; cursor: text;" data-grid-item-index="0"><span class="index-story-section__belief-icon" aria-hidden="true" style="cursor: text;">איכות<br></span></li><li class="index-story-section__belief-item" data-grid-item-index="1">
+      <ul class="index-story-section__beliefs"><li class="index-story-section__belief-item" style="background-color: rgba(255, 244, 214, 0.04) !important; padding: 12px !important; box-sizing: border-box; grid-area: auto !important; " data-grid-item-index="0"><span class="index-story-section__belief-icon" aria-hidden="true">איכות<br></span></li><li class="index-story-section__belief-item" data-grid-item-index="1">
           <span class="index-story-section__belief-icon" aria-hidden="true">
             <svg data-element-type="icon" data-icon-type="svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="cursor: pointer;"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
           </span>
@@ -1020,7 +1391,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
   <!-- Section Header -->
   <div class="benefits-header">
     <h2 class="benefits-title">למה לקנות אצלנו?</h2>
-    <div class="benefits-subtitle" style="">חוויית קנייה שמבינה את התרבות והאהבה שלך לכדורגל</div>
+    <div class="benefits-subtitle">חוויית קנייה שמבינה את התרבות והאהבה שלך לכדורגל</div>
     <div class="brushstroke-underline" aria-hidden="true"></div>
   </div>
 
@@ -1035,8 +1406,8 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
           <path d="M24 12 L28 20 L37 21.5 L30.5 28 L32 37 L24 32.8 L16 37 L17.5 28 L11 21.5 L20 20 Z" fill="var(--secondary)" stroke="none"></path>
         </svg>
       </div>
-      <h3 class="benefit-card-title" style="">חולצות כדורגל רפליקה, בדיוק כמו המקור</h3>
-      <p class="benefit-card-text" style="">מבחר עצום של חולצות כדורגל מהליגות המובילות בעולם. כל חולצה עוברת בדיקת איכות קפדנית כדי להבטיח שתקבלו מוצר מקורי ואיכותי. אנחנו עובדים ישירות מול ספקים מורשים ומציעים מגוון רחב של קבוצות, נבחרות ושחקנים.</p>
+      <h3 class="benefit-card-title">חולצות כדורגל רפליקה, בדיוק כמו המקור</h3>
+      <p class="benefit-card-text">מבחר עצום של חולצות כדורגל מהליגות המובילות בעולם. כל חולצה עוברת בדיקת איכות קפדנית כדי להבטיח שתקבלו מוצר מקורי ואיכותי. אנחנו עובדים ישירות מול ספקים מורשים ומציעים מגוון רחב של קבוצות, נבחרות ושחקנים.</p>
       <div class="sticker-accent" aria-hidden="true">100% מקורי</div>
     </article>
 
@@ -1051,8 +1422,8 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
           <circle cx="32" cy="32" r="2" fill="var(--accent)"></circle>
         </svg>
       </div>
-      <h3 class="benefit-card-title" style="">מענה אישי לכל אחד</h3>
-      <p class="benefit-card-text" style="">מחפשים חולצות כדורגל למשחק בשכונה? אנחנו מספקים ייעוץ מקצועי להתאמת מידות, עיצוב והדפסה מותאמת אישית. מלווים אתכם משלב הרעיון ועד לאספקה המלאה, כולל מבצעים מיוחדים להזמנות קבוצתיות.</p>
+      <h3 class="benefit-card-title">מענה אישי לכל אחד</h3>
+      <p class="benefit-card-text">מחפשים חולצות כדורגל למשחק בשכונה? אנחנו מספקים ייעוץ מקצועי להתאמת מידות, עיצוב והדפסה מותאמת אישית. מלווים אתכם משלב הרעיון ועד לאספקה המלאה, כולל מבצעים מיוחדים להזמנות קבוצתיות.</p>
       <div class="sticker-accent" aria-hidden="true">ייעוץ חינם</div>
     </article>
 
@@ -1082,7 +1453,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
         </svg>
       </div>
       <h3 class="benefit-card-title">זמינות ותקשורת ישירה</h3>
-      <p class="benefit-card-text" style="">יש שאלה לגבי מידה, דגם או זמינות? אנחנו כאן בשבילכם. צרו קשר בוואטסאפ או באינסטגרם ואנחנו נחזור אליכם במהירות עם תשובה ברורה ומדויקת. אנחנו מאמינים בשירות אישי ושקיפות מלאה לאורך כל התהליך.</p>
+      <p class="benefit-card-text">יש שאלה לגבי מידה, דגם או זמינות? אנחנו כאן בשבילכם. צרו קשר בוואטסאפ או באינסטגרם ואנחנו נחזור אליכם במהירות עם תשובה ברורה ומדויקת. אנחנו מאמינים בשירות אישי ושקיפות מלאה לאורך כל התהליך.</p>
       <div class="sticker-accent" aria-hidden="true">מענה מהיר</div>
     </article>
 
@@ -1104,7 +1475,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
     <div class="index-cta-section__content">
       <h2 class="index-cta-section__heading">הגיע הזמן ללבוש את התשוקה</h2>
       <div class="index-cta-section__accent-line" aria-hidden="true"></div>
-      <p class="index-cta-section__description" style="">מחפשים חולצת כדורגל איכותית לקבוצה האהובה עליכם? צריכים מדים מותאמים לקבוצת הנוער? או אולי מתנה מושלמת לחובב הספורט? אנחנו כאן עם האוסף הגדול ביותר של חולצות כדורגל, שירות אישי ומשלוח מהיר לכל הארץ.</p>
+      <p class="index-cta-section__description">מחפשים חולצת כדורגל איכותית לקבוצה האהובה עליכם? צריכים מדים מותאמים לקבוצת הנוער? או אולי מתנה מושלמת לחובב הספורט? אנחנו כאן עם האוסף הגדול ביותר של חולצות כדורגל, שירות אישי ומשלוח מהיר לכל הארץ.</p>
       <div class="index-cta-section__actions">
         <a href="https://wa.me/972523938005" class="index-cta-section__btn index-cta-section__btn--primary" data-element-type="button" data-element-id="btn-1783964806064-23kj76xng" data-native-element="true" style="outline: none; border-color: rgb(244, 63, 94) !important; color: rgb(255, 255, 255) !important; background-color: rgb(244, 63, 94) !important; background-image: none !important;" target="_blank" rel="noopener noreferrer">צור קשר עכשיו</a>
         <a href="/collections" class="index-cta-section__btn index-cta-section__btn--secondary" data-element-type="button" data-element-id="btn-1783964806064-simmpqww5" data-native-element="true">לכל הקולקציות</a>
@@ -1134,7 +1505,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
     <div class="footer-grid">
       <!-- Company Info -->
       <div class="footer-col footer-company-col">
-        <img src="/assets/sport-jersey-sports-apparel-e-commerce-logo.webp" alt="Sport_jersey" class="logo" data-element-type="image" data-element-id="img-1783965906629-psp003ufl" data-zappy-footer-image="true" style="" decoding="async" width="35" height="35">
+        <img src="/assets/sport-jersey-sports-apparel-e-commerce-logo.webp" alt="Sport_jersey" class="logo" data-element-type="image" data-element-id="img-1783965906629-psp003ufl" data-zappy-footer-image="true" decoding="async" width="35" height="35">
         <p class="company-tagline">החולצות הכי חמות מהמגרש ישר לארון שלך – איכות, אותנטיות ואהבה אמיתית לכדורגל.</p>
       </div>
 
@@ -1161,7 +1532,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
             <span class="contact-icon"><i class="fas fa-phone" data-element-type="icon" data-element-id="icon-1783965906608-5ugg44bg0" data-icon-type="fontawesome"></i></span>
             <span class="contact-text"><a href="tel:0523938005">0523938005</a></span>
           </li>
-          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=9%20%D7%A0%D7%A2%D7%9E%D7%99%20%D7%A9%D7%9E%D7%A8%2C%20%D7%A7%D7%A8%D7%99%D7%99%D7%AA%20%D7%91%D7%99%D7%90%D7%9C%D7%99%D7%A7%2C%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C%2C%202751419%2C%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C" target="_blank" rel="noopener noreferrer" style=""><span class="contact-icon"><i class="fas fa-map-marker-alt" data-element-type="icon" data-element-id="icon-1783965906609-bk9ye2468" data-icon-type="fontawesome" style="cursor: pointer;"></i></span>
+          <li><a href="https://www.google.com/maps/search/?api=1&amp;query=9%20%D7%A0%D7%A2%D7%9E%D7%99%20%D7%A9%D7%9E%D7%A8%2C%20%D7%A7%D7%A8%D7%99%D7%99%D7%AA%20%D7%91%D7%99%D7%90%D7%9C%D7%99%D7%A7%2C%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C%2C%202751419%2C%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C" target="_blank" rel="noopener noreferrer"><span class="contact-icon"><i class="fas fa-map-marker-alt" data-element-type="icon" data-element-id="icon-1783965906609-bk9ye2468" data-icon-type="fontawesome" style="cursor: pointer;"></i></span>
             <span class="contact-text">קריית ביאליק</span></a></li>
         </ul>
       </div>
@@ -1169,7 +1540,7 @@ html{box-sizing:border-box;-webkit-text-size-adjust:100%}*,*::before,*::after{bo
       <!-- Business Hours -->
       <div class="footer-col footer-hours-col">
         <h4>שעות פעילות</h4>
-        <ul class="footer-hours" style=""><li><a href="/" style=""><span class="hours-day">יום א’ 10:00-23:00</span>&nbsp;</a></li><li><a href="/" style=""><span class="hours-day">ימים ב’–ה' 10:00-00:00</span></a></li><li><a href="/">שישי 10:00-17:00</a></li><li><a href="/">שבת סגור</a></li></ul>
+        <ul class="footer-hours"><li><a href="/"><span class="hours-day">יום א’ 10:00-23:00</span>&nbsp;</a></li><li><a href="/"><span class="hours-day">ימים ב’–ה' 10:00-00:00</span></a></li><li><a href="/">שישי 10:00-17:00</a></li><li><a href="/">שבת סגור</a></li></ul>
       </div>
 
       <!-- Social Media -->
